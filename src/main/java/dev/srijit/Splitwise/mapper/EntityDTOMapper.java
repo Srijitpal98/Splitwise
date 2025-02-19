@@ -18,17 +18,21 @@ public class EntityDTOMapper {
         responseDTO.setEmail(user.getEmail());
         //conversion of user friends to friendList
         List<UserFriendResponseDTO> friendList = new ArrayList<>();
-        for(User friend : user.getFriends()) {
-            friendList.add(toFriendDTO(friend));
+        if(user.getFriends() != null) {
+            for (User friend : user.getFriends()) {
+                friendList.add(toFriendDTO(friend));
+            }
+            responseDTO.setFriendList(friendList);
         }
-        responseDTO.setFriendList(friendList);
 
         //conversion of group to groupResponseDTO
-        List<GroupResponseDTO> groups = new ArrayList<>();
-        for(Group group : user.getGroups()) {
-            groups.add(toDTO(group));
+        if(user.getGroups() != null) {
+            List<GroupResponseDTO> groups = new ArrayList<>();
+            for (Group group : user.getGroups()) {
+                groups.add(toDTO(group));
+            }
+            responseDTO.setGroups(groups);
         }
-        responseDTO.setGroups(groups);
         return responseDTO;
     }
 

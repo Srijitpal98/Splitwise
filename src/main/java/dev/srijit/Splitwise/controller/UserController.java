@@ -1,5 +1,6 @@
 package dev.srijit.Splitwise.controller;
 
+import dev.srijit.Splitwise.dto.UserLoginRequestDTO;
 import dev.srijit.Splitwise.dto.UserRegistrationRequestDTO;
 import dev.srijit.Splitwise.entity.User;
 import dev.srijit.Splitwise.expection.UserRegistrationInvalidDataException;
@@ -26,6 +27,15 @@ public class UserController {
         );
     }
 
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+        validateUserLoginRequestDTO(userLoginRequestDTO);
+        User savedUser = userService.login(userLoginRequestDTO.getEmail(), userLoginRequestDTO.getPassword());
+        return ResponseEntity.ok(
+                EntityDTOMapper.toDTO(savedUser)
+        );
+    }
+
     private void validateUserRegistrationRequestDTO(UserRegistrationRequestDTO requestDTO) {
         //do both using regex: youtube.com/watch?v=K8L6KVGG-7o
         //TODO: Validate if the email is proper
@@ -33,5 +43,9 @@ public class UserController {
         if(requestDTO.getEmail() == null || requestDTO.getName() == null || requestDTO.getPassword() == null) {
             throw new UserRegistrationInvalidDataException("Invalid signup data");
         }
+    }
+
+    private void validateUserLoginRequestDTO(UserLoginRequestDTO requestDTO) {
+
     }
 }

@@ -7,3 +7,61 @@
     * Group creation
     * adding an expense
     * settleUp
+
+One Way vs Two way Mapping
+
+one-way mapping :
+Auditorium Seats(BMS)
+
+How many times
+1. fetch auditorium from DB -> fetch seats for that auditorium
+
+2. fetch seat from DB -> fetch the auditorium for that seat
+
+As option 1 is more likely, we choose one way mapping, i.e., Auditorium has Seats
+
+class Auditorium {
+    Seat seat;
+}
+
+class Seat {
+    //does not have auditorium attribute
+}
+
+Two-way mapping :
+User Booking (Red Bus)
+
+User profile -> list of bookings
+Booking -> booked by some user
+
+class User {
+    Booking booking;
+}
+
+class Booking {
+    User user;
+}
+
+
+Splitwise
+User Group
+2way
+User -> shows all the groups
+Group -> shows all the users
+
+Group Expense
+1way
+Group -> expense
+Expense -> group [not required]
+
+Two way mapping ofter leads to multiple table creation
+
+mappedBy
+JoinColumn
+
+spring.jpa.hibernate.ddl-auto=validate -> In production we use liquibase scripts to create tables. We never create or
+update the tables using JPA because its very risky as it can remove or delete data. So instead of 'create' or 'update',
+we use 'validate'. validate will go to the database and it will check if all the tables are present, all the
+relationships are present, all the foreign keys, mapping tables, etc everything is present with respect to the models
+or not. If it is present then the application will start. If not present the application will stop/breakdown/won't start
+But spring itself will not change the database.
