@@ -6,11 +6,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserAmount {
+public class UserAmountDTO {
     private User user;
     private double amount;
 
-    public UserAmount(User user, double amount) {
+    public UserAmountDTO(User user, double amount) {
         this.user = user;
         this.amount = amount;
     }

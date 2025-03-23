@@ -1,6 +1,6 @@
 package dev.srijit.Splitwise.service.strategy.settleUpStrategy;
 
-import dev.srijit.Splitwise.dto.UserAmount;
+import dev.srijit.Splitwise.dto.UserAmountDTO;
 import dev.srijit.Splitwise.entity.*;
 
 import java.util.*;
@@ -10,20 +10,20 @@ public class MinimumTransactionSettlementStrategy implements SettleUpStrategy{
     public List<SettlementTransaction> getSettlementTransactions(List<Expense> expenses) {
         HashMap<User, Double> map = getOutstandingBalances(expenses);
         // Comparator for min heap [ascending order]
-        Comparator<UserAmount> minHeapComparator = Comparator.comparingDouble(UserAmount::getAmount);
+        Comparator<UserAmountDTO> minHeapComparator = Comparator.comparingDouble(UserAmountDTO::getAmount);
         // Comparator for max heap [descending order]
-        Comparator<UserAmount> maxHeapComparator = Comparator.comparingDouble(UserAmount::getAmount).reversed();
+        Comparator<UserAmountDTO> maxHeapComparator = Comparator.comparingDouble(UserAmountDTO::getAmount).reversed();
         // Max Heap
-        PriorityQueue<UserAmount> maxHeap = new PriorityQueue<>(maxHeapComparator);
+        PriorityQueue<UserAmountDTO> maxHeap = new PriorityQueue<>(maxHeapComparator);
         // Min Heap
-        PriorityQueue<UserAmount> minHeap = new PriorityQueue<>(minHeapComparator);
+        PriorityQueue<UserAmountDTO> minHeap = new PriorityQueue<>(minHeapComparator);
 
         for(Map.Entry<User, Double> entry : map.entrySet()) {
             if(entry.getValue() < 0) {
-                minHeap.add(new UserAmount(entry.getKey(), entry.getValue()));
+                minHeap.add(new UserAmountDTO(entry.getKey(), entry.getValue()));
             }
             else if(entry.getValue() > 0) {
-                maxHeap.add(new UserAmount(entry.getKey(), entry.getValue()));
+                maxHeap.add(new UserAmountDTO(entry.getKey(), entry.getValue()));
             }
             else {
                 System.out.println("User doesn't need to participate in settle up");
@@ -31,8 +31,8 @@ public class MinimumTransactionSettlementStrategy implements SettleUpStrategy{
         }
         List<SettlementTransaction> settlementTransactions = new ArrayList<>();
         while(!maxHeap.isEmpty() && !minHeap.isEmpty()) {
-            UserAmount borrower = minHeap.poll();
-            UserAmount lender = maxHeap.poll();
+            UserAmountDTO borrower = minHeap.poll();
+            UserAmountDTO lender = maxHeap.poll();
 
             if(Math.abs(borrower.getAmount()) > lender.getAmount()) {
                 // Lender = 500, Borrower = -1000, borrower pays lender 500
